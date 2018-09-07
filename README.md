@@ -7,6 +7,8 @@ This plugin uses [HOUDINI](https://github.com/qnib/moby/tree/houdini) to allow k
 ## Show Me
 
 ```bash
+$ kubectl apply -f k8s/qnib-device-plugin.yml
+daemonset.extensions "qnib-device-plugin-gpu-daemonset" created
 $ kubectl -n kube-system get daemonset |grep qnib
 qnib-device-plugin-gpu-daemonset   1         1         1         1            1           houdini.gpu=true                4m
 ```
@@ -75,5 +77,3 @@ job.batch/nvidia-smi-4   1         1            23s
 job.batch/nvidia-smi-5   1         1            23s
 ```
 
-
-## Run device plugin
