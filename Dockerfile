@@ -14,7 +14,7 @@ RUN wget -nv -O - https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linu
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-WORKDIR /go/src/github.com/qnib/k8s-device-plugin
+WORKDIR /go/src/github.com/qnib/k8s-device-plugin-gpu
 COPY . .
 
 RUN export CGO_LDFLAGS_ALLOW='-Wl,--unresolved-symbols=ignore-in-object-files' && \
@@ -25,6 +25,7 @@ FROM debian:stretch-slim
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV HOUDINI_GPU_ENABLED=true
 
-COPY --from=build /go/bin/k8s-device-plugin /usr/bin/qnib-device-plugin
+COPY --from=build /go/bin/k8s-device-plugin-gpu /usr/bin/qnib-device-plugin-gpu
+COPY ./etc/gpu.ini /etc/qnib-device-plugin/gpu.ini
 
-CMD ["qnib-device-plugin"]
+CMD ["qnib-device-plugin-gpu"]

@@ -24,11 +24,6 @@
 #   go-tests = true
 #   unused-packages = true
 
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/NVIDIA/gpu-monitoring-tools"
-
 [[constraint]]
   name = "github.com/fsnotify/fsnotify"
   version = "1.4.7"

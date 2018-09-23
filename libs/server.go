@@ -1,4 +1,4 @@
-package main
+package qniblib // import "github.com/qnib/k8s-device-plugin-gpu/libs"
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"path"
 	"strings"
 	"time"
-
+	"github.com/zpatrick/go-config"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	pluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
@@ -16,7 +16,7 @@ import (
 
 const (
 	resourceName           = "qnib.org/gpu"
-	serverSock             = pluginapi.DevicePluginPath + "qnib.sock"
+	serverSock             = pluginapi.DevicePluginPath + "qnib-gpu.sock"
 	envDisableHealthChecks = "DP_DISABLE_HEALTHCHECKS"
 )
 
@@ -24,19 +24,21 @@ const (
 type QnibGPUDevicePlugin struct {
 	devs   []*pluginapi.Device
 	socket string
-
+	cfg		*config.Config
 	stop   chan interface{}
 	health chan *pluginapi.Device
-
 	server *grpc.Server
 }
 
-// NewQnibGPUDevicePlugin returns an initialized QnibGPUDevicePlugin
-func NewQnibGPUDevicePlugin() *QnibGPUDevicePlugin {
-	return &QnibGPUDevicePlugin{
-		devs:   getDevices(),
-		socket: serverSock,
 
+
+// NewQnibGPUDevicePlugin returns an initialized QnibGPUDevicePlugin
+func NewQnibGPUDevicePlugin(cfg string) *QnibGPUDevicePlugin {
+	c, _ := NewConfig(cfg)
+	return &QnibGPUDevicePlugin{
+		devs: 	GetDevices(c),
+		socket: serverSock,
+		cfg: 	c,
 		stop:   make(chan interface{}),
 		health: make(chan *pluginapi.Device),
 	}
@@ -148,22 +150,43 @@ func (m *QnibGPUDevicePlugin) unhealthy(dev *pluginapi.Device) {
 
 // Allocate which return list of devices.
 func (m *QnibGPUDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.AllocateRequest) (*pluginapi.AllocateResponse, error) {
-	devs := m.devs
 	responses := pluginapi.AllocateResponse{}
 	for _, req := range reqs.ContainerRequests {
-		response := pluginapi.ContainerAllocateResponse{
-			Envs: map[string]string{
-				"NVIDIA_VISIBLE_DEVICES": strings.Join(req.DevicesIDs, ","),
-				"HOUDINI_GPU_ENABLED": "true",
-			},
+		devs := []*pluginapi.DeviceSpec{}
+		envs := map[string]string{}
+		mnts := []*pluginapi.Mount{}
+		// Devs
+		sidekickDevs, _ := m.cfg.StringOr("devices.sidekicks", "")
+		for _, sidekick := range strings.Split(sidekickDevs, ",") {
+			devs = append(devs, &pluginapi.DeviceSpec{sidekick, sidekick, "rwm"})
 		}
-
-		for _, id := range req.DevicesIDs {
-			if !deviceExists(devs, id) {
-				return nil, fmt.Errorf("invalid allocation request: unknown device: %s", id)
+		for _, devId := range req.DevicesIDs {
+			dpath := fmt.Sprintf("/dev/nvidia%s", devId)
+			devs = append(devs, &pluginapi.DeviceSpec{dpath, dpath, "rwm"})
+		}
+		// Environment
+		envLibs, _ := m.cfg.StringOr("environment.libs", "")
+		for _, envLib := range strings.Split(envLibs, ",") {
+			s := strings.Split(envLib, "=")
+			if len(s) != 2 {
+				continue
 			}
+			envs[s[0]] = s[1]
 		}
-
+		// Mounts
+		binLibs, _ := m.cfg.StringOr("mounts.libs", "")
+		for _, binLib := range strings.Split(binLibs, ",") {
+			mnts = append(mnts, &pluginapi.Mount{binLib, binLib, true})
+		}
+		binMnts, _ := m.cfg.StringOr("mounts.bins", "")
+		for _, binMnt := range strings.Split(binMnts, ",") {
+			mnts = append(mnts, &pluginapi.Mount{binMnt, binMnt, true})
+		}
+		response := pluginapi.ContainerAllocateResponse{
+			Envs: envs,
+			Devices: devs,
+			Mounts: mnts,
+		}
 		responses.ContainerResponses = append(responses.ContainerResponses, &response)
 	}
 

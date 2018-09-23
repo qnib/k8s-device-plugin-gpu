@@ -25,13 +25,8 @@ spec:
         operator: Exists
         effect: NoSchedule
       containers:
-      - image: qnib/k8s-device-plugin-gpu:1.11-1
+      - image: qnib/k8s-device-plugin-gpu:1.11-dev3
         name: qnib-device-plugin-gpu-ctr
-        env:
-        - name: HOUDINI_GPU_ENABLED
-          value: "true"
-        - name: NVIDIA_VISIBLE_DEVICES
-          value: "all"
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -39,7 +34,12 @@ spec:
         volumeMounts:
           - name: device-plugin
             mountPath: /var/lib/kubelet/device-plugins
+          - name: device-plugin-config
+            mountPath: /etc/qnib-device-plugin/
       volumes:
         - name: device-plugin
           hostPath:
             path: /var/lib/kubelet/device-plugins
+        - name: device-plugin-config
+          hostPath:
+            path: /etc/qnib-device-plugin/

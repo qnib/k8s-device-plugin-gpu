@@ -8,7 +8,8 @@ spec:
       containers:
       - name: pi
         image: ubuntu
-        command: ["nvidia-smi",  "-L"]
+        #command: ["ls", "/dev/",  "/usr/local/", "/usr/bin"]
+        command: ["/usr/bin/nvidia-smi", "-L"]
         resources:
           limits:
             qnib.org/gpu: 1

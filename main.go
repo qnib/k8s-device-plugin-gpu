@@ -3,20 +3,33 @@
 package main
 
 import (
+	"fmt"
+	"github.com/qnib/k8s-device-plugin-gpu/libs"
 	"log"
 	"os"
+	"strings"
 	"syscall"
 
 	"github.com/fsnotify/fsnotify"
 	pluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
 )
 
+const (
+	gpuIniFile = "/etc/qnib-device-plugin/gpu.ini"
+)
 func main() {
-
+	cfg, _ := qniblib.NewConfig(gpuIniFile)
 	log.Println("Fetching devices.")
-	if len(getDevices()) == 0 {
+	devs := qniblib.GetDevices(cfg)
+	if len(devs) == 0 {
 		log.Println("No devices found. Waiting indefinitely.")
 		select {}
+	} else {
+		strDevs := []string{}
+		for _, dev := range devs {
+			strDevs = append(strDevs, fmt.Sprintf("/dev/nvidia%s", dev.ID))
+		}
+		log.Printf("Found '%s' devices: %s",devs, strings.Join(strDevs, ","))
 	}
 
 	log.Println("Starting FS watcher.")
@@ -31,7 +44,7 @@ func main() {
 	sigs := newOSWatcher(syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
 	restart := true
-	var devicePlugin *QnibGPUDevicePlugin
+	var devicePlugin *qniblib.QnibGPUDevicePlugin
 
 L:
 	for {
@@ -40,7 +53,7 @@ L:
 				devicePlugin.Stop()
 			}
 
-			devicePlugin = NewQnibGPUDevicePlugin()
+			devicePlugin = qniblib.NewQnibGPUDevicePlugin(gpuIniFile)
 			if err := devicePlugin.Serve(); err != nil {
 				log.Println("Could not contact Kubelet, retrying. Did you enable the device plugin feature gate?")
 				log.Printf("You can check the prerequisites at: https://github.com/NVIDIA/k8s-device-plugin#prerequisites")

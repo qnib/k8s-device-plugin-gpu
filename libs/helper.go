@@ -1,4 +1,4 @@
-package main
+package qniblib // import "github.com/qnib/k8s-device-plugin-gpu/libs"
 
 import "regexp"
 
