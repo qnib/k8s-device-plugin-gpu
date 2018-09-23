@@ -16,7 +16,7 @@ qnib-device-plugin-gpu-daemonset   1         1         1         1            1 
 Now pods can request the resource `qnib.org/gpu`. Let's spin up a bunch of batch jobs.
 
 ```
-$ for x in {1..5};do kubectl apply -f k8s/job-nvidia-smi-${x}.yml;done
+$ for x in {1..5};do sed -e "s/\-0/\-${x}/" k8s/job-nvidia-smi.yml|kubectl apply -f -;done
 job.batch "nvidia-smi-1" created
 job.batch "nvidia-smi-2" created
 job.batch "nvidia-smi-3" created
