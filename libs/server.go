@@ -174,9 +174,16 @@ func (m *QnibGPUDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Allo
 			envs[s[0]] = s[1]
 		}
 		// Mounts
-		binLibs, _ := m.cfg.StringOr("mounts.libs", "")
-		for _, binLib := range strings.Split(binLibs, ",") {
-			mnts = append(mnts, &pluginapi.Mount{binLib, binLib, true})
+		libMnts, _ := m.cfg.StringOr("mounts.libs", "")
+		for _, libMnt := range strings.Split(libMnts, ",") {
+			s := strings.Split(libMnt, ":")
+			switch len(s) {
+			case 2:
+				mnts = append(mnts, &pluginapi.Mount{s[0], s[1], true})
+			default:
+				mnts = append(mnts, &pluginapi.Mount{libMnt, libMnt, true})
+			}
+
 		}
 		binMnts, _ := m.cfg.StringOr("mounts.bins", "")
 		for _, binMnt := range strings.Split(binMnts, ",") {

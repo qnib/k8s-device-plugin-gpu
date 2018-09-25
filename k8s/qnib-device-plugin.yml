@@ -25,7 +25,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       containers:
-      - image: qnib/k8s-device-plugin-gpu:1.11-0
+      - image: qnib/k8s-device-plugin-gpu:1.11-1
         name: qnib-device-plugin-gpu-ctr
         securityContext:
           allowPrivilegeEscalation: false
