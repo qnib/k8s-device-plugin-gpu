@@ -14,8 +14,6 @@ spec:
       labels:
         name: qnib-device-plugin-gpu-ds
     spec:
-      nodeSelector:
-        houdini.gpu: "true"
       tolerations:
       # Allow this pod to be rescheduled while the node is in "critical add-ons only" mode.
       # This, along with the annotation above marks this pod as a critical add-on.
@@ -25,7 +23,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       containers:
-      - image: qnib/k8s-device-plugin-gpu:1.11-1
+      - image: qnib/k8s-device-plugin-gpu:1.11-2
         name: qnib-device-plugin-gpu-ctr
         securityContext:
           allowPrivilegeEscalation: false

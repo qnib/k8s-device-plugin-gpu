@@ -18,7 +18,11 @@ const (
 	gpuIniFile = "/etc/qnib-device-plugin/gpu.ini"
 )
 func main() {
-	cfg, _ := qniblib.NewConfig(gpuIniFile)
+	cfg, err := qniblib.NewConfig(gpuIniFile)
+	if err != nil {
+		log.Printf("No config file '%s' found. Waiting indefinitely.", gpuIniFile)
+		select {}
+	}
 	log.Println("Fetching devices.")
 	devs := qniblib.GetDevices(cfg)
 	if len(devs) == 0 {
