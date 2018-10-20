@@ -7,8 +7,8 @@ spec:
   template:
     spec:
       containers:
-      - name: pi
-        image: ubuntu
+      - name: smi
+        image: ubuntu:16.04
         command: ["/usr/bin/nvidia-smi", "-L"]
         resources:
           limits:

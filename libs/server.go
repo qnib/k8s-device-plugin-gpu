@@ -179,7 +179,7 @@ func (m *QnibGPUDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Allo
 			s := strings.Split(libMnt, ":")
 			switch len(s) {
 			case 2:
-				mnts = append(mnts, &pluginapi.Mount{s[0], s[1], true})
+				mnts = append(mnts, &pluginapi.Mount{s[1], s[0], true})
 			default:
 				mnts = append(mnts, &pluginapi.Mount{libMnt, libMnt, true})
 			}
