@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gpu-ffmpeg-0
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      containers:
+      - name: ffmpeg
+        image: qnib/uplain-cuda-ffmpeg:bionic.9-2.3
+        command: ["/usr/local/bin/run-bench.sh"]
+        resources:
+          limits:
+            qnib.org/gpu: 1
+        volumeMounts:
+        - name: data
+          mountPath: /data
+          readOnly: false
+      volumes:
+      - name: data
+        emptyDir: {}
+      restartPolicy: Never

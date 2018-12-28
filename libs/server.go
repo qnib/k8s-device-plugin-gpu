@@ -167,15 +167,23 @@ func (m *QnibGPUDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Allo
 		// Environment
 		envLibs, _ := m.cfg.StringOr("environment.libs", "")
 		for _, envLib := range strings.Split(envLibs, ",") {
+			if envLib == "" {
+				continue
+			}
 			s := strings.Split(envLib, "=")
 			if len(s) != 2 {
 				continue
 			}
+			log.Println("Adding environment: ", envLib)
 			envs[s[0]] = s[1]
 		}
 		// Mounts
 		libMnts, _ := m.cfg.StringOr("mounts.libs", "")
 		for _, libMnt := range strings.Split(libMnts, ",") {
+			if libMnt == "" {
+				continue
+			}
+			log.Println("Adding lib-mount: ", libMnt)
 			s := strings.Split(libMnt, ":")
 			switch len(s) {
 			case 2:
@@ -187,6 +195,10 @@ func (m *QnibGPUDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Allo
 		}
 		binMnts, _ := m.cfg.StringOr("mounts.bins", "")
 		for _, binMnt := range strings.Split(binMnts, ",") {
+			if binMnt == "" {
+				continue
+			}
+			log.Println("Adding bin-mount: ", binMnt)
 			mnts = append(mnts, &pluginapi.Mount{binMnt, binMnt, true})
 		}
 		response := pluginapi.ContainerAllocateResponse{

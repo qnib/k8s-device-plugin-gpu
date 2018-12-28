@@ -1,0 +1,61 @@
+{
+	"comment": "",
+	"ignore": "",
+	"package": [
+		{
+			"checksumSHA1": "WYsDhZGparMeQMUkvocePUa9V5s=",
+			"path": "golang.org/x/text/internal/gen",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "ag7y2tiDc1Yx4fxBrA/CuwKZptg=",
+			"path": "golang.org/x/text/internal/testtext",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "NiXSJYqpwWFmbwcaK/KspZ2sjgw=",
+			"path": "golang.org/x/text/internal/ucd",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "C41IIv/93IBm81eurIwmnE+d+kA=",
+			"path": "golang.org/x/text/secure/bidirule",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "pwfxF0hZOAIqPvaCLZu7gaRqp7A=",
+			"path": "golang.org/x/text/transform",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "8eQUqJtV/VVVAG+XL80phTrvbCY=",
+			"path": "golang.org/x/text/unicode/bidi",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "tnWIeVOd9lwFFmah9bIPHistKEA=",
+			"path": "golang.org/x/text/unicode/cldr",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "ucDYXHkDs5mtFKuq3XbWBrCllP4=",
+			"path": "golang.org/x/text/unicode/norm",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		},
+		{
+			"checksumSHA1": "tmgDoZs0NYT+xvBdeSSwZFoqAoA=",
+			"path": "golang.org/x/text/unicode/rangetable",
+			"revision": "e6919f6577db79269a6443b9dc46d18f2238fb5d",
+			"revisionTime": "2018-12-15T12:10:58Z"
+		}
+	],
+	"rootPath": "github.com/qnib/k8s-device-plugin-gpu"
+}
